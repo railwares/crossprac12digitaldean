@@ -1,8 +1,12 @@
 package ua.edu.digitaldean.app;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +46,14 @@ public final class FileExchangeApp {
         } catch (IllegalArgumentException exception) {
             System.err.println("Помилка: некоректні аргументи.");
             System.exit(2);
+            return;
+        }
+
+        if (parameters.mode().equals("--version")) {
+            int versionCode = printVersion();
+            if (versionCode != 0) {
+                System.exit(versionCode);
+            }
             return;
         }
 
@@ -116,6 +128,14 @@ public final class FileExchangeApp {
         }
 
         String mode = args[index];
+        if (mode.equals("--version")) {
+            if (rem != 1) {
+                throw new IllegalArgumentException("Зайві аргументи для --version.");
+            }
+            return new Parameters(baseDir, delimiter, maxBytes,
+                    "--version", null, null, null, null, null);
+        }
+
         if (mode.equals("--resource")) {
             if (rem != 1) {
                 throw new IllegalArgumentException("Зайві аргументи для --resource.");
@@ -196,6 +216,37 @@ public final class FileExchangeApp {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Ліміт байтів поза межами int.");
         }
+    }
+
+    private static int printVersion() {
+        try (InputStream input = FileExchangeApp.class.getResourceAsStream("/build-info.properties")) {
+            if (input == null) {
+                System.err.println("Помилка: відсутні або некоректні відомості про версію.");
+                return 5;
+            }
+            Properties props = new Properties();
+            try (var reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+                props.load(reader);
+            }
+            String appName = props.getProperty("app.name");
+            String appVersion = props.getProperty("app.version");
+            String javaRelease = props.getProperty("java.release");
+            if (isInvalidMeta(appName) || isInvalidMeta(appVersion) || isInvalidMeta(javaRelease)) {
+                System.err.println("Помилка: відсутні або некоректні відомості про версію.");
+                return 5;
+            }
+            System.out.println(appName.strip());
+            System.out.println("Версія: " + appVersion.strip());
+            System.out.println("Цільова версія Java: " + javaRelease.strip());
+            return 0;
+        } catch (IOException e) {
+            System.err.println("Помилка: відсутні або некоректні відомості про версію.");
+            return 5;
+        }
+    }
+
+    private static boolean isInvalidMeta(String value) {
+        return value == null || value.isBlank() || value.contains("${");
     }
 
     private static int execute(Parameters parameters, Logger logger) {

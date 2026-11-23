@@ -16,7 +16,8 @@ import ua.edu.digitaldean.model.StudentId;
 import ua.edu.digitaldean.model.TranscriptRequest;
 
 public final class RequestImporter {
-
+    public RequestImporter() {
+    }
     public List<TranscriptRequest> read(Path path)
             throws IOException, RequestDataException {
         Objects.requireNonNull(path, "Шлях не може бути null.");

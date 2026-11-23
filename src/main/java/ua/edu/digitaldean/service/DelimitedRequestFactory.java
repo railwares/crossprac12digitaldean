@@ -9,6 +9,8 @@ import ua.edu.digitaldean.model.StudentId;
 import ua.edu.digitaldean.model.TranscriptRequest;
 
 public final class DelimitedRequestFactory implements RequestFactory {
+    public DelimitedRequestFactory() {
+    }
     @Override
     public AcademicRequest create(StudentId studentId, String specification) {
         Objects.requireNonNull(studentId, "Ідентифікатор студента не може бути null.");

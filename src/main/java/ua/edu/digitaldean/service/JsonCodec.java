@@ -13,6 +13,8 @@ import java.util.Set;
 import ua.edu.digitaldean.model.StudentId;
 
 public final class JsonCodec {
+    public JsonCodec() {
+    }
 
     public List<RequestFileRow> read(Reader reader) throws IOException {
         Objects.requireNonNull(reader, "Джерело не може бути null.");
@@ -64,7 +66,6 @@ public final class JsonCodec {
     private static final class Parser {
         private final String text;
         private int position;
-
         private Parser(String text) {
             this.text = text;
         }

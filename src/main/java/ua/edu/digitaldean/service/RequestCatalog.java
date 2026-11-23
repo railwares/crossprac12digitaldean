@@ -21,6 +21,8 @@ import ua.edu.digitaldean.model.RequestKey;
 import ua.edu.digitaldean.model.StudentId;
 
 public final class RequestCatalog<T extends AcademicRequest> {
+    public RequestCatalog() {
+    }
     private final Map<RequestKey, T> byId = new LinkedHashMap<>();
     private final Queue<RequestKey> pending = new ArrayDeque<>();
 

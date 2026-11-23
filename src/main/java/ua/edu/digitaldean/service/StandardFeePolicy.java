@@ -6,6 +6,9 @@ import java.util.Objects;
 import ua.edu.digitaldean.model.AcademicRequest;
 
 public final class StandardFeePolicy implements FeePolicy {
+    public StandardFeePolicy() {
+    }
+
     @Override
     public BigDecimal calculate(AcademicRequest request) {
         Objects.requireNonNull(request, "Заява не може бути null.");
